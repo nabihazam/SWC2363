@@ -1,0 +1,44 @@
+<?php
+// Check if form data is received via POST method
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Retrieve and sanitize input data
+    $manager_name = htmlspecialchars(trim($_POST['manager_name']));
+    $sales_month = htmlspecialchars(trim($_POST['sales_month']));
+    $sales_amount = floatval($_POST['sales_amount']); // Convert to float for calculations
+
+    // Initialize commission rate and amount
+    $commission_rate = 0;
+
+    // Determine commission rate based on sales amount
+    if ($sales_amount >= 1 && $sales_amount <= 2000) {
+        $commission_rate = 3;
+    } elseif ($sales_amount >= 2001 && $sales_amount <= 5000) {
+        $commission_rate = 4;
+    } elseif ($sales_amount >= 5001 && $sales_amount <= 7000) {
+        $commission_rate = 7;
+    } elseif ($sales_amount > 7000) {
+        $commission_rate = 10;
+    }
+
+    // Calculate commission amount
+    $commission_amount = ($sales_amount * $commission_rate) / 100;
+
+    // Display the results in a table format
+    echo "<h2>Sales Commission</h2>";
+    echo "<table border='1' style='border-collapse: collapse; width: 50%; margin: auto;'>
+            <tr>
+                <th>Name</th>
+                <th>Month</th>
+                <th>Sales Amount</th>
+                <th>Sales Commission</th>
+            </tr>
+            <tr>
+                <td>" . htmlspecialchars($manager_name) . "</td>
+                <td>" . htmlspecialchars($sales_month) . "</td>
+                <td>RM " . number_format($sales_amount, 2) . "</td>
+                <td>RM " . number_format($commission_amount, 2) . "</td>
+            </tr>
+          </table>";
+} else {
+    echo "Invalid request.";
+}
